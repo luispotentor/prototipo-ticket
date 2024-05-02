@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+
+  mariadb:
+    image: bitnami/mariadb:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_DATABASE=laravel
+      - MARIADB_USER=laravel_user
+      - MARIADB_PASSWORD=laravel_password
+    volumes:
+      - ./mysql_data:/bitnami/mysql/data
+    ports:
+      - "3311:3306"
+    networks:
+      - laravel_network
+
+  myapp:
+    image: bitnami/laravel:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./my-project:/app
+    depends_on:
+      - mariadb
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USERNAME=laravel_user
+      - DB_DATABASE=laravel
+      - DB_PASSWORD=laravel_password
+    networks:
+      - laravel_network
+
+networks:
+  laravel_network:
+    driver: bridge
