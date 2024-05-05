@@ -6,11 +6,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
+use App\Traits\UsesUuid;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable,SoftDeletes,HasApiTokens,UsesUuid;
 
+    public $incrementing = false;
     /**
      * The attributes that are mass assignable.
      *
@@ -44,4 +50,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function role():BelongsTo{
+        return $this->belongsTo(Role::class);
+    }
+
+    public function tickets():HasMany{
+        return $this->hasMany(Ticket::class);
+    }
+
 }
