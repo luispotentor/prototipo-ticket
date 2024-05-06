@@ -11,7 +11,17 @@ El proyecto de backend está ubicado en la carpeta my-project. Utiliza Laravel 1
 
 docker-compose up -d
 
-3.- Una vez que los contenedores estén en funcionamiento, puedes acceder al backend en http://localhost:8000.
+3.- Una vez que los contenedores estén en funcionamiento, accede al contenedor de Laravel ejecutando el siguiente comando:
+
+docker exec -it <nombre_del_contenedor> bash
+
+Sustituye <nombre_del_contenedor> por el nombre de tu contenedor de Laravel. Por lo general, este será algo como 'prototipo-tikets-myapp-1'
+
+4.- Dentro del contenedor, ejecuta las migraciones y los seeders con el siguiente comando:
+
+php artisan migrate --seed
+
+5.- El backend estará disponible en http://localhost:8000.
 
 FRONTEND
 
