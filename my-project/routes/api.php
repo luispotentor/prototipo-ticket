@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\UserTokenController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\TicketAdminController;
 use App\Http\Controllers\Api\V1\TicketCustomerController;
+use App\Http\Controllers\Api\V1\TicketTypeController;
 use App\Http\Middleware\IsAdminUser;
 use App\Http\Middleware\IsCustomerUser;
 
@@ -28,6 +28,10 @@ Route::prefix('v1/customerTickets')->middleware(['auth:sanctum',IsCustomerUser::
     Route::post('/', [TicketCustomerController::class, 'store']);
     Route::put('/{id}', [TicketCustomerController::class, 'update']);
     Route::delete('/{id}', [TicketCustomerController::class, 'destroy']);
+});
+
+Route::prefix('v1/ticketTypes')->middleware(['auth:sanctum'])->group(function (){
+    Route::get('/', [TicketTypeController::class, 'index']);
 });
 
 

@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Interfaces;
-use Illuminate\Http\Request;
-
 interface TicketServiceInterface
 {
     public function getAllTickets():array;

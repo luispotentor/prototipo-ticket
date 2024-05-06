@@ -26,7 +26,7 @@ class TicketTypeSeeder extends Seeder
         ]);
 
         TicketType::create([
-            'name' => 'Operativo',
+            'name' => 'Error',
         ]);
     }
 }

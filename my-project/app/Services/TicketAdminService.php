@@ -7,6 +7,8 @@ use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\V1\TicketResource;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TicketAdminService implements TicketServiceInterface
 {
@@ -49,35 +51,59 @@ class TicketAdminService implements TicketServiceInterface
     }
     public function createTicket(array $request):array
     {
-        $ticketResponse = Ticket::create($request);
+        DB::beginTransaction();
 
-        if (is_null($ticketResponse)) {
+        try {
+
+            Ticket::create($request);
+            DB::commit();
+
+            return [
+                'response' => [
+                    'message' => 'Ticket creado correctamente.'
+                ],
+                'status'   => 201
+            ];
+        } catch (\Throwable $th) {
+            DB::rollBack();
             throw new HttpException(500, 'Error al crear el Ticket.');
         }
 
-        return [
-            'response' => [
-                'message' => 'Ticket creado correctamente.'
-            ],
-            'status'   => 201
-        ];
 
     }
     public function updateTicket(string $id, array $request): array
     {
-        $ticket = Ticket::find($id);
+        DB::beginTransaction();
 
-        if (is_null($ticket)) {
-            throw new HttpException(404, 'Ticket no encontrado.');
+        try {
+            $ticket = Ticket::find($id);
+
+            if (is_null($ticket)) {
+
+                throw new ModelNotFoundException('Ticket no encontrado.');
+            }
+
+            $ticket->update($request);
+            DB::commit();
+            return [
+                'response' => [
+                    'message' => 'Ticket actualizado correctamente.'
+                ],
+                'status'   => 200
+            ];
+        } catch (ModelNotFoundException $e) {
+
+            return [
+                'response' => [
+                    'message' => $e->getMessage()
+                ],
+                'status'   => 404
+            ];
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw new HttpException(500, 'Error al actualizar el Ticket.');
         }
-        $ticket->update($request);
 
-        return [
-            'response' => [
-                'message' => 'Ticket actualizado correctamente.'
-            ],
-            'status'   => 200
-        ];
     }
     public function deleteTicket($id):array
     {

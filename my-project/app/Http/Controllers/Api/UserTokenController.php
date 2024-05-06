@@ -16,7 +16,7 @@ class UserTokenController extends Controller
         if ( !Auth::attempt($request->only('email','password')) )
         {
             throw ValidationException::withMessages([
-                'message' => 'Invalid credentials'
+                'message' => 'Correo ó contraseña invalida'
             ]);
         }
 

@@ -5,11 +5,16 @@ use App\Interfaces\TicketServiceInterface;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Http\Resources\V1\TicketResource;
+use Illuminate\Support\Facades\DB;
+use App\Models\TicketStatus;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TicketCustomerService implements TicketServiceInterface {
 
     protected $tickets;
     protected $user;
+
+    const STATUS_IN_PROGRESS = 'En Proceso';
 
     public function __construct(Auth $auth)
     {
@@ -48,35 +53,68 @@ class TicketCustomerService implements TicketServiceInterface {
     public function createTicket(array $request):array
     {
 
-        $ticketResponse = $this->user->tickets()->create($request);
+        DB::beginTransaction();
+        try {
 
-        if (is_null($ticketResponse)) {
+            $statusInProgress = TicketStatus::where('name', self::STATUS_IN_PROGRESS )->first();
+
+            if (is_null($statusInProgress)) {
+                DB::rollBack();
+                throw new HttpException(500, 'Error al crear el Ticket.');
+            }
+
+            $request['ticket_status_id'] = $statusInProgress->id;
+            $this->user->tickets()->create($request);
+            DB::commit();
+
+            return [
+                'response' => [
+                    'message' => 'Ticket creado correctamente.'
+                ],
+                'status'   => 201
+            ];
+        } catch (\Throwable $th) {
+            DB::rollBack();
             throw new HttpException(500, 'Error al crear el Ticket.');
         }
 
-        return [
-            'response' => [
-                'message' => 'Ticket creado correctamente.'
-            ],
-            'status'   => 201
-        ];
     }
+
     public function updateTicket(string $id, array $request): array
     {
-        $ticket = $this->tickets->find($id);
 
-        if (is_null($ticket)) {
-            throw new HttpException(404, 'Ticket no encontrado.');
+        DB::beginTransaction();
+
+        try {
+            $ticket = $this->tickets->find($id);
+
+            if (is_null($ticket)) {
+                throw new ModelNotFoundException('Ticket no encontrado.');
+            }
+
+            $ticket->update($request);
+            DB::commit();
+            return [
+                'response' => [
+                    'message' => 'Ticket actualizado correctamente.'
+                ],
+                'status'   => 200
+            ];
+        } catch (ModelNotFoundException $e) {
+
+            return [
+                'response' => [
+                    'message' => $e->getMessage()
+                ],
+                'status'   => 404
+            ];
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw new HttpException(500, 'Error al actualizar el Ticket.');
         }
-        $ticket->update($request);
 
-        return [
-            'response' => [
-                'message' => 'Ticket actualizado correctamente.'
-            ],
-            'status'   => 200
-        ];
     }
+
     public function deleteTicket($id):array
     {
         $ticket = $this->tickets->find($id);

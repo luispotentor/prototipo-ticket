@@ -16,22 +16,22 @@ class TicketStatusSeeder extends Seeder
     {
         TicketStatus::create([
             'name' => 'Pendiente',
-            'color' => '#FFD700',
+            'color' => 'yellow',
         ]);
 
         TicketStatus::create([
             'name' => 'En Proceso',
-            'color' => '#32CD32 ',
+            'color' => 'green',
         ]);
 
         TicketStatus::create([
             'name' => 'Finalizado',
-            'color' => '#4169E1 ',
+            'color' => 'blue',
         ]);
 
         TicketStatus::create([
             'name' => 'Eliminado',
-            'color' => '#FF4500',
+            'color' => 'red',
         ]);
     }
 }

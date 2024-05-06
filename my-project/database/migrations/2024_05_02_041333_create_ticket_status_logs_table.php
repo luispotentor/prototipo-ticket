@@ -15,12 +15,13 @@ return new class extends Migration
             $table->uuid('id')->primary()->uniqid;
             $table->uuid('ticket_id');
             $table->uuid('user_id');
-            $table->enum('status', ['Pendiente','En Proceso','Finalizado','Eliminado']);
+            $table->uuid('ticket_status_id');
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('ticket_id')->references('id')->on('tickets');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('ticket_status_id')->references('id')->on('ticket_statuses');
         });
     }
 
@@ -32,6 +33,7 @@ return new class extends Migration
         Schema::table('ticket_status_logs', function (Blueprint $table) {
             $table->dropForeign(['ticket_id']);
             $table->dropForeign(['user_id']);
+            $table->dropForeign(['ticket_status_id']);
         });
 
         Schema::dropIfExists('ticket_status_logs');

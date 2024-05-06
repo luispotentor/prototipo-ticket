@@ -19,8 +19,8 @@ class TicketComment extends Model
         return $this->belongsTo(Ticket::class);
     }
 
-    public function admin():BelongsTo
+    public function user():BelongsTo
     {
-        return $this->belongsTo(Admin::class);
+        return $this->belongsTo(User::class);
     }
 }

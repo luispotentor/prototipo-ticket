@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Interfaces\TicketServiceInterface;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\V1\UpdateTicketCustomerRequest;

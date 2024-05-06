@@ -24,6 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('personal_access_tokens', function (Blueprint $table) {
+            $table->dropForeign(['ticket_id']);
             $table->bigInteger('tokenable_id')->change();
             // $table->foreignId('tokenable_id')->change();
 

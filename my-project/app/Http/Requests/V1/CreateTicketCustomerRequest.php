@@ -25,7 +25,7 @@ class CreateTicketCustomerRequest extends FormRequest
             'ticket_type_id' => 'required|exists:ticket_types,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'ticket_status_id' => 'required|string|exists:ticket_statuses,id',
+            // 'ticket_status_id' => 'required|string|exists:ticket_statuses,id',
         ];
     }
 
@@ -44,9 +44,9 @@ class CreateTicketCustomerRequest extends FormRequest
             'title.max' => 'El título del ticket no puede tener más de :max caracteres.',
             'description.required' => 'La descripción del ticket es obligatoria.',
             'description.string' => 'La descripción del ticket debe ser una cadena de caracteres.',
-            'ticket_status_id.required' => 'El estado del ticket es obligatorio.',
-            'ticket_status_id.string' => 'El estado del ticket debe ser una cadena de caracteres.',
-            'ticket_status_id.exists' => 'El estado del ticket seleccionado no es válido.',
+            // 'ticket_status_id.required' => 'El estado del ticket es obligatorio.',
+            // 'ticket_status_id.string' => 'El estado del ticket debe ser una cadena de caracteres.',
+            // 'ticket_status_id.exists' => 'El estado del ticket seleccionado no es válido.',
         ];
     }
 }
