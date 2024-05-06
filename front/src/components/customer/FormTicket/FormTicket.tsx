@@ -55,10 +55,10 @@ export const FormTicket:React.FC<PropsFormTicket> = ( props ) => {
     const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>) => {
 
         const value = event?.target?.value;
-        const name  = event?.target?.name;
 
-        if( ticketEdit){
-            setTicketEdit({...ticketEdit,[name]:value});
+        const selectedType =selectTicketTypes?.find( (item) => item.value == value );
+        if( ticketEdit && selectedType) {
+            setTicketEdit({...ticketEdit,type:{id:selectedType?.value,name:selectedType?.name}});
         }
     }
 
